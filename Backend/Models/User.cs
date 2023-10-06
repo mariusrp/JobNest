@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using AspNetCore.Identity.Mongo.Model;
 
-namespace LazyNews.Models
+namespace Backend.Models
 {
     public class User : MongoUser
     {

@@ -1,10 +1,10 @@
 using AspNetCore.Identity.Mongo;
 using AspNetCore.Identity.Mongo.Model;
-using LazyNews.Data;
-using LazyNews.Models;
-using LazyNews.Repositories;
+using Backend.Data;
+using Backend.Models;
+using Backend.Repositories;
 
-namespace LazyNews
+namespace Backend
 {
     public class Startup
     {
@@ -56,7 +56,7 @@ namespace LazyNews
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LazyNews v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend v1"));
             }
             else
             {

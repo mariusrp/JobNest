@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using CodeHollow.FeedReader;
-using LazyNews.Models;
+using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ShortNews.Controllers

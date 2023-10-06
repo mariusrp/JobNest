@@ -1,4 +1,4 @@
-namespace LazyNews.Models;
+namespace Backend.Models;
 
 public class RssItem
 {

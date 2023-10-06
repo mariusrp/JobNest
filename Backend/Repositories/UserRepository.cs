@@ -1,13 +1,13 @@
 // UserRepository.cs
-using LazyNews.Data;
-using LazyNews.Models;
+using Backend.Data;
+using Backend.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 using System.Threading.Tasks;
 
 
-namespace LazyNews.Repositories
+namespace Backend.Repositories
 {
     public class UserRepository
     {

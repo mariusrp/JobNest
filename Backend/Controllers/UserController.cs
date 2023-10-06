@@ -1,14 +1,14 @@
 
 // UserController.cs
-using LazyNews.Repositories;
+using Backend.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using LazyNews.Models;
+using Backend.Models;
 using MongoDB.Bson.IO;
 using Newtonsoft.Json;
 
 
-namespace LazyNews.Controllers
+namespace Backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]

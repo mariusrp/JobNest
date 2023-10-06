@@ -1,4 +1,4 @@
-namespace LazyNews.Data;
+namespace Backend.Data;
 
 using MongoDB.Driver;
 
