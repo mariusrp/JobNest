@@ -14,15 +14,15 @@ import { NewsContext } from '../NewsContext'
 
 const useStyles = makeStyles({
   root: {
-    marginTop: 20,
+    marginTop: 60,
   },
   card: {
-    maxWidth: 345,
+    maxWidth: 500,
     margin: 'auto',
     marginBottom: 20,
   },
   media: {
-    height: 140,
+    height: 220,
   },
 })
 
@@ -45,6 +45,13 @@ export default function App() {
     const data = await response.json()
     console.log(data)
     setNews(data)
+  }
+
+  const truncate = (str: string, n: number) => {
+    if (str.length <= n) {
+      return str
+    }
+    return str.slice(0, n) + '...'
   }
 
   React.useEffect(() => {
@@ -71,8 +78,14 @@ export default function App() {
                 <Typography variant="h5" component="div">
                   {item.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {item.description}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  className="fade-out"
+                >
+                  {item.description.length > 100
+                    ? truncate(item.description, 250)
+                    : ''}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Published on: {item.pubDate}

@@ -5,7 +5,6 @@ import NavigationBar from './components/NavigationBar'
 import { NewsProvider } from './NewsContext'
 import NewDesignLogin from './pages/LoginPage'
 import Practice from './pages/Practice'
-import Rss from './pages/Rss'
 import Subheader from './components/SubHeader'
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<NewDesignLogin />} />
           <Route path="/practice" element={<Practice />} />
-          <Route path="/rss" element={<Rss />} />
         </Routes>
       </Router>
     </NewsProvider>

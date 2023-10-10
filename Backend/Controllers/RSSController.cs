@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using CodeHollow.FeedReader;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,41 +13,60 @@ namespace ShortNews.Controllers
     [ApiController]
     public class RSSController : ControllerBase
     {
+        private readonly HttpClient _httpClient = new HttpClient();
 
-        [HttpGet("fetch-rss/toppsaker")]
-        public async Task<IActionResult> FetchRss()
+        [HttpGet("fetch-rss/{category}/{type}")]
+        public async Task<IActionResult> FetchRss(string type, string category)
         {
-            var feed = await FeedReader.ReadAsync("https://www.nrk.no/toppsaker.rss");
-            var rssItems = new List<RssItem>();
+            var feedUrl = category == ""
+                ? $"https://www.nrk.no/{type}.rss"
+                : $"https://www.nrk.no/{category}/{type}.rss";
+
+            using var response = await _httpClient.GetAsync(feedUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                return BadRequest("Failed to retrieve RSS feed");
+            }
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            var xdoc = await XDocument.LoadAsync(stream, LoadOptions.None, CancellationToken.None);
+            var rssItems = new List<Backend.Models.RssItem>();
 
             var media = XNamespace.Get("http://search.yahoo.com/mrss/");
-
-            foreach (var item in feed.Items)
+            foreach (var item in xdoc.Descendants("item"))
             {
-                var rssItem = new RssItem
+                var linkElement = item.Element("link");
+                if (linkElement == null || string.IsNullOrEmpty(linkElement.Value))
                 {
-                    Title = item.Title,
-                    Link = item.Link,
-                    Description = item.Description,
-                    PubDate = item.PublishingDate?.ToString("R"),
-                };
-
-                var imageElement = item.SpecificItem.Element.Descendants(media + "content").FirstOrDefault();
-                if (imageElement != null)
-                {
-                    rssItem.ImageUrl = imageElement.Attribute("url")?.Value;
+                    continue;  // Skip this item if there is no link
                 }
+
+                var mediaContent = item.Element(media + "content");
+                string imageUrl = "https://www.shutterstock.com/image-vector/play-button-icon-vector-illustration-260nw-1697833306.jpg";  // Set default image URL
+
+                if (mediaContent != null && mediaContent.Attribute("medium")?.Value == "image")
+                {
+                    imageUrl = mediaContent.Attribute("url")?.Value;
+                }
+
+                var rssItem = new Backend.Models.RssItem
+                {
+                    Title = item.Element("title")?.Value,
+                    Link = linkElement.Value,
+                    Description = item.Element("description")?.Value,
+                    PubDate = item.Element("pubDate")?.Value,
+                    ImageUrl = imageUrl  // This will either be the image URL from the XML or the default image URL
+                };
 
                 rssItems.Add(rssItem);
             }
 
             return Ok(rssItems);
         }
-
-
     }
-    
-
-
-
 }
+
+
+
+
+

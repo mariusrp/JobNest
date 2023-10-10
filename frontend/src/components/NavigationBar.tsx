@@ -13,6 +13,7 @@ import { NewsContext } from '../NewsContext'
 import { NewsSearchType } from '../types/NewsSearchType'
 import { SelectChangeEvent } from '@mui/material' // Import this type
 import { DistrictType } from '../types/DistrictType'
+import { Nav } from 'react-bootstrap'
 
 export default function NavBar() {
   const { state, dispatch } = useContext(NewsContext)
@@ -62,7 +63,7 @@ export default function NavBar() {
             </Badge>
           </IconButton>
         ) : (
-          <Typography variant="body1">Login</Typography>
+          <Nav.Link href="/login">Login</Nav.Link>
         )}
       </Toolbar>
     </AppBar>

@@ -12,13 +12,11 @@ namespace Backend.Repositories
     public class UserRepository
     {
         private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
         private readonly MongoDbContext _context; 
 
         public UserRepository(SignInManager<User> signInManager, UserManager<User> userManager, MongoDbContext context)
         {
             _signInManager = signInManager;
-            _userManager = userManager;
             _context = context; 
         }
 
