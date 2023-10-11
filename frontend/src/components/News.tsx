@@ -28,7 +28,7 @@ export default function NewsFeed({ news }: { news: NewsType[] }) {
                 <Typography variant="h5" component="div">
                   {item.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{ color: 'primary' }}>
                   {item.description}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">

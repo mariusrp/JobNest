@@ -7,6 +7,7 @@ type AppState = {
   user: UserProfile | null
   category: CategoryType
   district: DistrictType
+  logoutModalOpen?: boolean
 }
 
 type Action =
@@ -14,6 +15,7 @@ type Action =
   | { type: 'USER_SIGNOUT' }
   | { type: 'CATEGORY_CHANGE'; payload: CategoryType }
   | { type: 'DISTRICT_CHANGE'; payload: DistrictType }
+  | { type: 'TOGGLE_LOGOUT_MODAL' }
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -31,6 +33,12 @@ function reducer(state: AppState, action: Action): AppState {
       localStorage.setItem('district', action.payload)
       localStorage.setItem('category', 'alle')
       return { ...state, district: action.payload, category: 'alle' }
+    case 'TOGGLE_LOGOUT_MODAL':
+      localStorage.setItem(
+        'logoutModalOpen',
+        JSON.stringify(!state.logoutModalOpen)
+      )
+      return { ...state, logoutModalOpen: !state.logoutModalOpen }
     default:
       return state
   }
@@ -42,6 +50,7 @@ const initialState: AppState = {
   user: localStorage.getItem('user')
     ? JSON.parse(localStorage.getItem('user') || '{}')
     : null,
+  logoutModalOpen: localStorage.getItem('logoutModalOpen') === 'true' || false,
 }
 
 const defaultDispatch = (): never => {
@@ -58,7 +67,7 @@ const NewsContext = React.createContext<StoreContextValue>({
   dispatch: defaultDispatch,
 })
 
-function NewsProvider(props: React.PropsWithChildren<{}>) {
+function NewsProvider(props: React.PropsWithChildren<object>) {
   const [state, dispatch] = React.useReducer<React.Reducer<AppState, Action>>(
     reducer,
     initialState

@@ -42,7 +42,7 @@ namespace Backend
                         .AllowAnyHeader()
                         .AllowAnyMethod());
             });
-            
+            services.AddTransient<UserRepository>();
             services.AddControllersWithViews();
             services.AddSingleton<MongoDbContext>();
             services.AddControllers();

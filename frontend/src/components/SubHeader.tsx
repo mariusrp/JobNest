@@ -6,6 +6,7 @@ import { styled } from '@mui/system'
 import { useContext } from 'react'
 import { NewsContext } from '../NewsContext'
 import { CategoryType } from '../types/CategoryType'
+import { Container } from '@mui/material'
 
 // You can style the ToggleButtonGroup and ToggleButton if desired
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
@@ -30,28 +31,37 @@ export default function Subheader() {
   ]
 
   const handleCategoryChange = (
-    event: React.MouseEvent<HTMLElement>,
+    e: React.MouseEvent<HTMLElement>,
     newCategory: CategoryType
   ) => {
     dispatch({ type: 'CATEGORY_CHANGE', payload: newCategory })
   }
 
   return (
-    <AppBar position="sticky">
-      <Toolbar>
-        <StyledToggleButtonGroup
-          value={category}
-          exclusive
-          onChange={handleCategoryChange}
-          aria-label="category selection"
-        >
-          {categories.map((cat) => (
-            <StyledToggleButton value={cat} key={cat} aria-label={cat}>
-              {cat.toUpperCase()}
-            </StyledToggleButton>
-          ))}
-        </StyledToggleButtonGroup>
-      </Toolbar>
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: 'transparent',
+        boxShadow: 'none',
+        mt: 10,
+      }}
+    >
+      <Container>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
+          <StyledToggleButtonGroup
+            value={category}
+            exclusive
+            onChange={handleCategoryChange}
+            aria-label="category selection"
+          >
+            {categories.map((cat) => (
+              <StyledToggleButton value={cat} key={cat} aria-label={cat}>
+                {cat.toUpperCase()}
+              </StyledToggleButton>
+            ))}
+          </StyledToggleButtonGroup>
+        </Toolbar>
+      </Container>
     </AppBar>
   )
 }
