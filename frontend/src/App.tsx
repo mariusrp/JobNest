@@ -6,6 +6,7 @@ import { NewsProvider } from './NewsContext'
 import NewDesignLogin from './pages/LoginPage'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Box } from '@mui/material'
+import FavoriteNewsPage from './pages/FavoriteNewsPage'
 
 const theme = createTheme({
   palette: {
@@ -44,6 +45,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<NewDesignLogin />} />
+              <Route path="favorite-news" element={<FavoriteNewsPage />} />
             </Routes>
           </Box>
         </Router>

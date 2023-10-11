@@ -14,10 +14,12 @@ import { NewsContext } from '../NewsContext'
 import { SelectChangeEvent } from '@mui/material'
 import { DistrictType } from '../types/DistrictType'
 import { Nav } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 
 export default function NavBar() {
+  const navigate = useNavigate()
   const { state, dispatch } = useContext(NewsContext)
-  const { user, logoutModalOpen } = state
+  const { user } = state
 
   const districts: DistrictType[] = [
     'norge',
@@ -50,6 +52,10 @@ export default function NavBar() {
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const goToMyFavorites = () => {
+    navigate('/favorite-news')
   }
 
   return (
@@ -91,9 +97,9 @@ export default function NavBar() {
               onClose={handleClose}
               onClick={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              <MenuItem onClick={handleClose}>Profil</MenuItem>
+              <MenuItem onClick={goToMyFavorites}>Mine Favoritter</MenuItem>
+              <MenuItem onClick={handleLogout}>Logg ut</MenuItem>
             </Menu>
           </div>
         ) : (

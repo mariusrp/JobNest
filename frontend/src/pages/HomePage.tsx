@@ -53,9 +53,7 @@ export default function App() {
   }
 
   const getFontSize = (textLength: number) => {
-    if (textLength <= 4) {
-      return 50
-    } else if (textLength <= 8) {
+    if (textLength <= 8) {
       return 40
     } else {
       return 30
@@ -98,7 +96,7 @@ export default function App() {
             }
 
             return (
-              <Grid item xs={xs} key={index}>
+              <Grid item xs={12} md={xs} key={index}>
                 <Card
                   sx={{
                     marginX: 'auto',
