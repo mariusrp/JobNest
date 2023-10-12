@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Backend.Models;
 using MongoDB.Bson.IO;
 using Newtonsoft.Json;
+using System;
+using Microsoft.AspNetCore.Authorization;
+
 
 
 namespace Backend.Controllers
@@ -15,10 +18,12 @@ namespace Backend.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserRepository _userRepository;
+        private readonly FavoritesRepository _favoritesRepository;
 
-        public UserController(UserRepository userRepository)
+        public UserController(UserRepository userRepository , FavoritesRepository favoritesRepository)
         {
             _userRepository = userRepository;
+            _favoritesRepository = favoritesRepository; 
         }
         
         [HttpPost("login-or-create-user")]
@@ -56,6 +61,34 @@ namespace Backend.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("{userId}/favorites")]
+        public async Task<IActionResult> GetFavorites(string userId)
+        {
+            var user = await _userRepository.FindUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            return Ok(user.FavoriteRssItems);
+        }
+
+        [Authorize]
+        [HttpPost("{userId}/favorites")]
+        public async Task<IActionResult> AddFavorite(string userId, [FromBody] RssItem favoriteItem)
+        {
+            await _favoritesRepository.AddFavoriteAsync(userId, favoriteItem);  // let FavoritesRepository handle adding favorite
+            return Ok(favoriteItem);
+        }
+
+        [Authorize]
+        [HttpDelete("{userId}/favorites/{rssItemId}")]
+        public async Task<IActionResult> RemoveFavorite(string userId, string rssItemId)
+        {
+            await _favoritesRepository.RemoveFavoriteAsync(userId, rssItemId);  // let FavoritesRepository handle removing favorite
+            return Ok();
+        }
     }
 }
 

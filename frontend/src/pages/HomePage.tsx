@@ -77,6 +77,8 @@ export default function App() {
   let layoutIndex = 0
   let layout = layouts[layoutIndex]
   let currentLayoutItem = 0
+  ///
+  let rowNumber = 0
 
   return (
     <div>
@@ -88,6 +90,15 @@ export default function App() {
             const maxWords = getMaxWords(xs)
             const fontSize = getFontSize(item.title.split(' ').length)
             const imageHeight = xs === 12 ? 500 : 400
+
+            ////////////////////////////////////TEMP
+            const isSingleItemRow = rowNumber % 4 === 0 || rowNumber % 4 === 3
+            const sm = isSingleItemRow ? 12 : 6
+
+            if (isSingleItemRow || index % 2 !== 0) {
+              rowNumber += 1
+            }
+            //TEMP/////////////////////////////////////
             currentLayoutItem += 1
             if (currentLayoutItem >= layout.length) {
               currentLayoutItem = 0
@@ -96,7 +107,7 @@ export default function App() {
             }
 
             return (
-              <Grid item xs={12} md={xs} key={index}>
+              <Grid item xs={12} sm={sm} md={xs} key={index}>
                 <Card
                   sx={{
                     marginX: 'auto',

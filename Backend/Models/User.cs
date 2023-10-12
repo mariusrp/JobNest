@@ -7,9 +7,10 @@ namespace Backend.Models
 {
     public class User : MongoUser
     {
-        [Key] public string UserId { get; set; } // Dette feltet kan fylles med GoogleId
+        [Key] public string UserId { get; set; } //  GoogleId
+        public List<RssItem> FavoriteRssItems { get; set; }= new List<RssItem>();
 
-
+        
         [MaxLength(200)] public string ProfilePictureUrl { get; set; } // Hentes fra Google
 
         public DateTime RegisteredOn { get; set; } = DateTime.UtcNow; // Registreringstidspunktet

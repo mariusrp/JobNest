@@ -7,7 +7,7 @@ using System.Xml.Linq;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ShortNews.Controllers
+namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -42,7 +42,7 @@ namespace ShortNews.Controllers
                 }
 
                 var mediaContent = item.Element(media + "content");
-                string imageUrl = "https://www.shutterstock.com/image-vector/play-button-icon-vector-illustration-260nw-1697833306.jpg";  // Set default image URL
+                string imageUrl = "https://gfx.nrk.no/r6wyGh9VdMMPBPAQs-0HcgvVU3NWt7QDYrWX-efFF2sQ";  // Set default image URL
 
                 if (mediaContent != null && mediaContent.Attribute("medium")?.Value == "image")
                 {
