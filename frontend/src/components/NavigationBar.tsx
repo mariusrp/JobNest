@@ -63,7 +63,7 @@ export default function NavBar() {
     <AppBar position="sticky" sx={{ backgroundColor: 'rgba(255,255,255,0.9)' }}>
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
-          Nyhet Snaps
+          <Nav.Link href="/">NyttPluss</Nav.Link>
         </Typography>
         <Select
           value={state.district}
@@ -97,7 +97,6 @@ export default function NavBar() {
               onClose={handleClose}
               onClick={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profil</MenuItem>
               <MenuItem onClick={goToMyFavorites}>Mine Favoritter</MenuItem>
               <MenuItem onClick={handleLogout}>Logg ut</MenuItem>
             </Menu>

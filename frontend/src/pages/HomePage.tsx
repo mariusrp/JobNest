@@ -12,15 +12,15 @@ import {
 import { NewsType } from '../types/NewsType'
 import { NewsContext } from '../NewsContext'
 import Subheader from '../components/SubHeader'
-import { AiOutlineHeart } from 'react-icons/ai'
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom'
 
 export default function App() {
   const [news, setNews] = React.useState([])
+  const [likedNews, setLikedNews] = React.useState<Set<number>>(new Set())
+
   const { state } = useContext(NewsContext)
-
   const { category, district, user } = state
-
   const navigate = useNavigate()
 
   const fetchNews = async () => {
@@ -39,15 +39,41 @@ export default function App() {
 
   const handleIconClick = (
     event: React.MouseEvent<HTMLElement>,
-    item: NewsType
+    item: NewsType,
+    index: number
   ) => {
-    // Prevent the card's click event from firing
     event.stopPropagation()
-
     if (user) {
-      saveNewsToFavorites(item)
+      if (likedNews.has(index)) {
+        const newSet = new Set(likedNews)
+        newSet.delete(index)
+        setLikedNews(newSet)
+        removeFromFavorites(item)
+      } else {
+        setLikedNews(new Set([...likedNews, index]))
+        saveNewsToFavorites(item)
+      }
     } else {
       navigate('/login')
+    }
+  }
+
+  const removeFromFavorites = async (item: NewsType) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5109/user/${user?.userId}/favorites/${item.id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(item),
+        }
+      )
+      const data = await response.json()
+      console.log(data)
+    } catch (error) {
+      console.error('Error:', error)
     }
   }
 
@@ -228,15 +254,30 @@ export default function App() {
                           padding: 1,
                         }}
                       >
-                        <AiOutlineHeart
-                          style={{
-                            fontSize: '28px',
-                            zIndex: 2,
-                            color: 'grey',
-                            '&:hover': { color: 'red' },
-                          }}
-                          onClick={(event) => handleIconClick(event, item)}
-                        />
+                        {likedNews.has(index) ? (
+                          <AiFillHeart
+                            style={{
+                              fontSize: '28px',
+                              zIndex: 2,
+                              color: 'red',
+                            }}
+                            onClick={(event) =>
+                              handleIconClick(event, item, index)
+                            }
+                          />
+                        ) : (
+                          <AiOutlineHeart
+                            style={{
+                              fontSize: '28px',
+                              zIndex: 2,
+                              color: likedNews.has(index) ? 'red' : 'grey',
+                              '&:hover': { color: 'red' },
+                            }}
+                            onClick={(event) =>
+                              handleIconClick(event, item, index)
+                            }
+                          />
+                        )}
                       </Box>
                     </Tooltip>
                   </Box>
