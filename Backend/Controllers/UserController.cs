@@ -61,8 +61,7 @@ namespace Backend.Controllers
             }
         }
 
-        [Authorize]
-        [HttpGet("{userId}/favorites")]
+      [HttpGet("{userId}/favorites")]
         public async Task<IActionResult> GetFavorites(string userId)
         {
             var user = await _userRepository.FindUserByIdAsync(userId);
@@ -74,24 +73,32 @@ namespace Backend.Controllers
             return Ok(user.FavoriteRssItems);
         }
 
-        [Authorize]
-        [HttpPost("{userId}/favorites")]
-        public async Task<IActionResult> AddFavorite(string userId, [FromBody] RssItem favoriteItem)
+    [HttpPost("{userId}/favorites")]
+    public async Task<IActionResult> AddFavorite(string userId, [FromBody] RssItem favoriteItem)
+    {
+        var user = await _userRepository.FindUserByIdAsync(userId);
+        if (user == null)
         {
-            await _favoritesRepository.AddFavoriteAsync(userId, favoriteItem);  // let FavoritesRepository handle adding favorite
+            return NotFound("User not found");
+        }
+
+        // Check if the news item already exists in favorites
+        if (!user.FavoriteRssItems.Any(item => item.Id == favoriteItem.Id))
+        {
+            // Only add the news item if it's not already in favorites
+            await _favoritesRepository.AddFavoriteAsync(userId, favoriteItem);
             return Ok(favoriteItem);
         }
 
-        [Authorize]
-        [HttpDelete("{userId}/favorites/{rssItemId}")]
-        public async Task<IActionResult> RemoveFavorite(string userId, string rssItemId)
-        {
-            await _favoritesRepository.RemoveFavoriteAsync(userId, rssItemId);  // let FavoritesRepository handle removing favorite
-            return Ok();
-        }
+        // News item is already in favorites, return a message or just OK
+        return Ok("News item is already in favorites.");
+    }
+
+    [HttpDelete("{userId}/favorites/{rssItemId}")]
+    public async Task<IActionResult> RemoveFavorite(string userId, string rssItemId)
+    {
+        await _favoritesRepository.RemoveFavoriteAsync(userId, rssItemId);  // let FavoritesRepository handle removing favorite
+        return Ok();
     }
 }
-
-
-
-
+}

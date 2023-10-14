@@ -1,3 +1,4 @@
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -51,6 +52,7 @@ namespace Backend.Controllers
 
                 var rssItem = new Backend.Models.RssItem
                 {
+                    Id = ObjectId.GenerateNewId().ToString(), // Generate a unique ID
                     Title = item.Element("title")?.Value,
                     Link = linkElement.Value,
                     Description = item.Element("description")?.Value,
@@ -65,8 +67,3 @@ namespace Backend.Controllers
         }
     }
 }
-
-
-
-
-

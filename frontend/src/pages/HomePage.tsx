@@ -6,16 +6,22 @@ import {
   Typography,
   Container,
   Grid,
+  Box,
+  Tooltip,
 } from '@mui/material'
 import { NewsType } from '../types/NewsType'
 import { NewsContext } from '../NewsContext'
 import Subheader from '../components/SubHeader'
+import { AiOutlineHeart } from 'react-icons/ai'
+import { useNavigate } from 'react-router-dom'
 
 export default function App() {
   const [news, setNews] = React.useState([])
   const { state } = useContext(NewsContext)
 
-  const { category, district } = state
+  const { category, district, user } = state
+
+  const navigate = useNavigate()
 
   const fetchNews = async () => {
     let url = `http://localhost:5109/api/rss/fetch-rss/${category}/toppsaker`
@@ -29,6 +35,45 @@ export default function App() {
     const data = await response.json()
     console.log(data)
     setNews(data)
+  }
+
+  const handleIconClick = (
+    event: React.MouseEvent<HTMLElement>,
+    item: NewsType
+  ) => {
+    // Prevent the card's click event from firing
+    event.stopPropagation()
+
+    if (user) {
+      saveNewsToFavorites(item)
+    } else {
+      navigate('/login')
+    }
+  }
+
+  const saveNewsToFavorites = async (item: NewsType) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5109/user/${user?.userId}/favorites`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(item),
+        }
+      )
+
+      if (response.status === 200) {
+        // Successful response, you can update the UI or show a notification
+        console.log('News added to favorites')
+      } else {
+        // Handle the error, e.g., display an error message
+        console.error('Failed to add news to favorites')
+      }
+    } catch (error) {
+      console.error('Error while adding news to favorites', error)
+    }
   }
 
   const truncateText = (text: string, maxWords: number) => {
@@ -53,7 +98,7 @@ export default function App() {
   }
 
   const getFontSize = (textLength: number) => {
-    if (textLength <= 8) {
+    if (textLength <= 7) {
       return 40
     } else {
       return 30
@@ -77,7 +122,7 @@ export default function App() {
   let layoutIndex = 0
   let layout = layouts[layoutIndex]
   let currentLayoutItem = 0
-  ///
+
   let rowNumber = 0
 
   return (
@@ -91,14 +136,12 @@ export default function App() {
             const fontSize = getFontSize(item.title.split(' ').length)
             const imageHeight = xs === 12 ? 500 : 400
 
-            ////////////////////////////////////TEMP
             const isSingleItemRow = rowNumber % 4 === 0 || rowNumber % 4 === 3
             const sm = isSingleItemRow ? 12 : 6
 
             if (isSingleItemRow || index % 2 !== 0) {
               rowNumber += 1
             }
-            //TEMP/////////////////////////////////////
             currentLayoutItem += 1
             if (currentLayoutItem >= layout.length) {
               currentLayoutItem = 0
@@ -110,17 +153,18 @@ export default function App() {
               <Grid item xs={12} sm={sm} md={xs} key={index}>
                 <Card
                   sx={{
+                    display: 'flex', // Make this a flex container
+                    flexDirection: 'column', // Arrange children vertically
                     marginX: 'auto',
                     marginY: 2,
                     backgroundColor: 'background.paper',
                     padding: 2,
-                    height: '100%',
+                    height: '100%', // Occupy the full height
                     border: 'none',
                     boxShadow: 0,
                     borderRadius: 8,
                     ':hover': {
                       boxShadow: 4,
-
                       cursor: 'pointer',
                       '& img': {
                         filter: 'brightness(1.1)',
@@ -144,7 +188,11 @@ export default function App() {
                     }
                     title={item.title}
                   />
-                  <CardContent>
+                  <CardContent
+                    sx={{
+                      flex: 1, // This makes the CardContent grow to occupy all available space
+                    }}
+                  >
                     <Typography
                       variant="h5"
                       component="div"
@@ -163,6 +211,35 @@ export default function App() {
                       Published on: {item.pubDate}
                     </Typography>
                   </CardContent>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'center',
+                      padding: 1,
+                    }}
+                  >
+                    <Tooltip title="Legg til Favoritter" arrow>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          alignItems: 'center',
+                          padding: 1,
+                        }}
+                      >
+                        <AiOutlineHeart
+                          style={{
+                            fontSize: '28px',
+                            zIndex: 2,
+                            color: 'grey',
+                            '&:hover': { color: 'red' },
+                          }}
+                          onClick={(event) => handleIconClick(event, item)}
+                        />
+                      </Box>
+                    </Tooltip>
+                  </Box>
                 </Card>
               </Grid>
             )
